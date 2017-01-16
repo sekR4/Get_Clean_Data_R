@@ -68,3 +68,79 @@ teams
 # http://www.omegahat.org/RSXML/shortIntro.pdf
 # http://www.omegahat.org/RSXML/Tour.pdf
 # http://www.stat.berkeley.edu/%7Estatcur/Workshop2/Presentations/XML.pdf
+
+# 4. JSON-files ----
+
+install.packages("jsonlite")
+library(jsonlite)
+jsonData <- fromJSON("https://api.github.com/users/jtleek/repos")
+names(jsonData)
+class(jsonData)
+
+names(jsonData$owner)
+
+jsonData$name
+
+jsonData$owner$login
+
+myjson <- toJSON(iris, pretty=TRUE)
+cat(myjson)
+
+
+iris2 <- fromJSON(myjson)
+head(iris2)
+
+head(iris)
+identical(iris, iris2)
+#Ups ^^
+
+# 5. Working with "data.table"
+
+library(data.table)
+
+#seems to be much easier to use than the standard data.frame
+
+DF <- data.frame(x=rnorm(9),y=rep(c("a","b","c"),each=3),z=rnorm(9))
+head(DF,3)
+
+DF1 <- data.table(x=rnorm(9),y=rep(c("a","b","c"),each=3),z=rnorm(9))
+head(DF1,3)
+DF1
+
+class(DF)
+class(DF1)
+#[1] "data.table" "data.frame" #2 classes?
+
+identical(DF, DF1)
+#false, at least it looks the same
+
+tables()
+
+# a little subsetting
+DF1[2,] #only row 2
+
+DF1[DF1$y=="a",]# all rows where y=a
+
+DF1[c(2,3)] # row 2 and 3 shown, no need to set ","
+
+DF1[,c(2,3)] # columns 2 and 3
+DF[,c(2,3)] # same
+
+DF1[,list(mean(x),sum(z))]
+# V1        V2
+# 1: 0.1362041 -1.790826
+
+DF[,list(mean(x),sum(z))]
+#Error in mean(x) : object 'x' not found
+
+DF1[,table(y)]
+#y
+#a b c 
+#3 3 3 
+
+DF[,table(y)]
+#Error in table(y) : object 'y' not found
+
+DF1[,w:=z^2]
+head(DF1,1) # so we added a new variable 'w'
+
