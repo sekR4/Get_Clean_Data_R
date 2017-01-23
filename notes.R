@@ -144,3 +144,23 @@ DF[,table(y)]
 DF1[,w:=z^2]
 head(DF1,1) # so we added a new variable 'w'
 
+
+DF1[,m:= {tmp <- (x+z); log2(tmp+5)}] #several operations processed at once
+head(DF1)
+
+DF1[,a:= x > 0] #adding a logical variable
+head(DF1)
+
+DF1[,b:= mean(x+w), by=a] #Hier wird dann unterschieden
+# zwischen den Gruppen TRUE und FALSE
+
+set.seed(123);
+DT <- data.table(x=sample(letters[1:3], 1E5, TRUE))
+
+DT[, .N, by=x] #Mit ".N" gezaehlt, mit "by" gruppiert
+head(DT)
+
+DT <- data.table(x=rep(c("a","b","c"),each=100), y=rnorm(300))
+setkey(DT, x)
+DT['a']
+head(DT)
